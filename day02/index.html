@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 2: Space Dashboard (NASA APOD & ISS Tracker) 🚀</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Leaflet.js CSS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="decorations">
+        <div class="glow glow-1"></div>
+        <div class="glow glow-2"></div>
+    </div>
+
+    <div class="container main-layout">
+        <!-- Navigation / Header -->
+        <nav class="top-nav">
+            <a href="../index.html" class="btn-back">
+                <i data-lucide="arrow-left"></i>
+                <span>Portal Dashboard</span>
+            </a>
+            <div class="nav-controls">
+                <button class="btn-info" onclick="toggleApiModal()">
+                    <i data-lucide="info"></i>
+                    <span>API Specs</span>
+                </button>
+                <div class="day-badge">DAY 02</div>
+            </div>
+        </nav>
+
+        <header class="app-header">
+            <h1>Astronomy APOD & <span class="text-gradient">ISS Live Tracker</span></h1>
+            <p class="subtitle">Fetches NASA's daily cosmic photography and maps the live orbital flight path of the International Space Station.</p>
+        </header>
+
+        <!-- Loading State -->
+        <div class="state-container" id="loadingState">
+            <div class="loader"></div>
+            <p>Initializing space telemetry...</p>
+        </div>
+
+        <!-- Error State -->
+        <div class="state-container error-container hidden" id="errorState">
+            <div class="error-icon"><i data-lucide="alert-triangle"></i></div>
+            <h3>Unable to connect to space APIs</h3>
+            <p id="errorMessage">Please check your internet connection or try again later. NASA limits DEMO_KEY requests.</p>
+            <button class="btn-primary" onclick="initDashboard()"><i data-lucide="refresh-cw"></i> Retry Telemetry</button>
+        </div>
+
+        <!-- Dashboard Layout -->
+        <div class="dashboard-grid hidden" id="dashboardContent">
+            
+            <!-- Column 1: NASA APOD Card -->
+            <div class="dashboard-card apod-card">
+                <div class="card-header">
+                    <div class="header-icon"><i data-lucide="image"></i></div>
+                    <h2>Astronomy Picture of the Day</h2>
+                    <span class="date-badge" id="apodDate">June 15, 2026</span>
+                </div>
+                
+                <div class="apod-content">
+                    <!-- Media Containers -->
+                    <div class="media-wrapper">
+                        <img id="apodImg" src="" alt="NASA Astronomy Picture of the Day" class="hidden">
+                        <div id="apodVideoContainer" class="hidden">
+                            <iframe id="apodVideo" src="" frameborder="0" allowfullscreen></iframe>
+                        </div>
+                        <div id="apodMediaFallback" class="media-loader">
+                            <div class="loader-pulse"></div>
+                            <span>Loading Media...</span>
+                        </div>
+                    </div>
+
+                    <div class="apod-info">
+                        <h3 class="apod-title" id="apodTitle">Cosmic Title</h3>
+                        <p class="copyright-info" id="apodCopyright">© NASA</p>
+                        
+                        <!-- Accordion for description -->
+                        <div class="accordion">
+                            <button class="accordion-trigger" onclick="toggleAccordion()">
+                                <span>Explanation</span>
+                                <i data-lucide="chevron-down" id="accordionIcon"></i>
+                            </button>
+                            <div class="accordion-content hidden" id="accordionContent">
+                                <p id="apodExplanation">Loading description...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 2: ISS Tracker Card -->
+            <div class="dashboard-card iss-card">
+                <div class="card-header">
+                    <div class="header-icon"><i data-lucide="orbit"></i></div>
+                    <h2>ISS Live Orbit Tracker</h2>
+                    <div class="status-indicator">
+                        <span class="blinking-dot"></span>
+                        <span class="status-text">LIVE</span>
+                    </div>
+                </div>
+
+                <div class="iss-content">
+                    <div class="iss-stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-icon"><i data-lucide="compass"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-label">Current Latitude</span>
+                                <span class="stat-value" id="issLat">0.0000°</span>
+                            </div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon"><i data-lucide="navigation-2"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-label">Current Longitude</span>
+                                <span class="stat-value" id="issLon">0.0000°</span>
+                            </div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon"><i data-lucide="gauge"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-label">Velocity (Est)</span>
+                                <span class="stat-value">27,600 km/h</span>
+                            </div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon"><i data-lucide="timer"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-label">Next Telemetry Fetch</span>
+                                <span class="stat-value" id="updateTimer">5s</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive ISS Live Map -->
+                    <div class="map-wrapper">
+                        <div id="issMap"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer style="margin-top: 40px; padding: 24px 0; border-top: 1px solid var(--border-color); text-align: center; font-size: 13px; color: var(--text-secondary); z-index: 10;">
+            <p>© 2026 30 Days of API Integrations | Developed by <b>Neer Bhardwaj</b> (<a href="mailto:codewithneerb@gmail.com" style="color: var(--accent); text-decoration: none;">codewithneerb@gmail.com</a>)</p>
+        </footer>
+    </div>
+
+    <!-- API Specification Info Modal -->
+    <div class="modal-overlay hidden" id="apiModal" onclick="closeApiModalOutside(event)">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2><i data-lucide="file-json"></i> Day 2 API Specifications</h2>
+                <button class="btn-close" onclick="toggleApiModal()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="api-spec-block">
+                    <h3>1. NASA Astronomy Picture of the Day (APOD)</h3>
+                    <p>Fetches the daily imagery/video with cosmic descriptions provided by astronomers.</p>
+                    <div class="code-box">
+                        <span class="code-method">GET</span> https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY
+                    </div>
+                    <p class="api-fallback-note"><b>Fallback key:</b> Handles empty values or media placeholders if limit is hit.</p>
+                </div>
+                
+                <div class="api-spec-block">
+                    <h3>2. Open Notify ISS Live Location</h3>
+                    <p>Returns the real-time latitude and longitude coordinates of the International Space Station.</p>
+                    <div class="code-box">
+                        <span class="code-method">GET</span> http://api.open-notify.org/iss-now.json
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet.js Script for Maps -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="app.js"></script>
+</body>
+</html>

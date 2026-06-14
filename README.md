@@ -23,14 +23,21 @@ Open **[http://localhost:8000](http://localhost:8000)** in your browser.
   1. [IP-API](http://ip-api.com) / [ipapi.co](https://ipapi.co) — Client IP Geolocation
   2. [Open-Meteo](https://open-meteo.com) — Meteorological Forecast
 * **Key Features**:
-  * Automatic IP address analysis and geographical coordination.
-  * Interactive dark-themed map visualization using [Leaflet.js](https://leafletjs.com/) and CartoDB.
-  * Real-time local weather reports (temperature, feels-like, wind speed/direction).
-  * 3-day meteorological forecast grid.
-  * API specs viewer modal displaying endpoint payloads.
-  * Dynamic ISO-to-flag emoji compiler.
+  * Automatic IP address analysis and mapping with [Leaflet.js](https://leafletjs.com/).
+  * Real-time weather parameters and a 3-day meteorological forecast.
+  * Dynamic Flag Emojis and specs preview overlay.
 
-### 🔒 Days 02 - 30: Mystery Challenges
+### 🟢 Day 02: Astronomy APOD & ISS Live Tracker
+* **APIs Integrated**:
+  1. [NASA APOD API](https://api.nasa.gov) — Astronomy Picture of the Day
+  2. [Open Notify ISS API](http://open-notify.org) — Live ISS Coordinate Telemetry
+* **Key Features**:
+  * Dual-media handler rendering high-quality NASA daily photography or YouTube video iframe embeds.
+  * Smooth expanding accordion explanation of celestial physics.
+  * Live-updating dark map showing the International Space Station's real-time position.
+  * 50-point dotted orbital flight path trail and countdown fetch timer.
+
+### 🔒 Days 03 - 30: Mystery Challenges
 * Locked API integrations and mystery challenges are encrypted in the dashboard portal. A new module will decrypt and unlock each day!
 
 ---
@@ -48,8 +55,14 @@ Open **[http://localhost:8000](http://localhost:8000)** in your browser.
 ├── index.html        # Main dashboard hub
 ├── style.css         # Portal styles
 ├── README.md         # Documentation
-└── day01/            # Day 1 project directory
-    ├── index.html    # Day 1 dashboard HTML
-    ├── style.css     # Day 1 CSS
-    └── app.js        # Geolocation & weather logic
+├── LICENSE           # MIT License
+├── .gitignore        # Staging ignores
+├── day01/            # Day 1 project directory
+│   ├── index.html    # Day 1 dashboard HTML
+│   ├── style.css     # Day 1 CSS
+│   └── app.js        # Geolocation & weather logic
+└── day02/            # Day 2 project directory
+    ├── index.html    # Day 2 Space HTML
+    ├── style.css     # Day 2 CSS
+    └── app.js        # NASA & ISS tracker logic
 ```

@@ -59,8 +59,24 @@
                 </div>
             </a>
 
-            <!-- Day 2 to 30 (Locked) -->
-            <!-- We generate placeholders for days 2-30 -->
+            <!-- Day 2 (Active) -->
+            <a href="day02/index.html" class="day-card active-card">
+                <div class="card-glow"></div>
+                <div class="day-badge">DAY 02</div>
+                <h3 class="card-title">Astronomy APOD & ISS Tracker</h3>
+                <p class="card-desc">Displays NASA's Astronomy Picture of the Day side-by-side with a live-updating map tracking the International Space Station's orbital path.</p>
+                <div class="card-techs">
+                    <span class="tech-tag">NASA APOD</span>
+                    <span class="tech-tag">Open Notify</span>
+                </div>
+                <div class="card-action">
+                    <span>Explore Project</span>
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+
+            <!-- Day 3 to 30 (Locked) -->
+            <!-- We generate placeholders for days 3-30 -->
             <div id="lockedDaysPlaceholder"></div>
         </div>
     </main>
@@ -73,10 +89,10 @@
     </footer>
 
     <script>
-        // Populate mysterious locked days (Days 2 to 30)
+        // Populate mysterious locked days (Days 3 to 30)
         const lockedDaysPlaceholder = document.getElementById('lockedDaysPlaceholder');
         let html = '';
-        for (let i = 2; i <= 30; i++) {
+        for (let i = 3; i <= 30; i++) {
             const dayStr = i < 10 ? `Day 0${i}` : `Day ${i}`;
             html += `
                 <div class="day-card locked-card">
