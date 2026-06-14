@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 1: Geolocation Weather Dashboard 🌍</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <!-- Leaflet.js CSS for Map -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="decorations">
+        <div class="glow glow-1"></div>
+        <div class="glow glow-2"></div>
+    </div>
+
+    <div class="container main-layout">
+        <!-- Navigation / Header -->
+        <nav class="top-nav">
+            <a href="../index.html" class="btn-back">
+                <i data-lucide="arrow-left"></i>
+                <span>Portal Dashboard</span>
+            </a>
+            <div class="nav-controls">
+                <button class="btn-info" onclick="toggleApiModal()">
+                    <i data-lucide="info"></i>
+                    <span>API Specs</span>
+                </button>
+                <div class="day-badge">DAY 01</div>
+            </div>
+        </nav>
+
+        <header class="app-header">
+            <h1>IP Geolocation & <span class="text-gradient">Live Weather</span></h1>
+            <p class="subtitle">Extracts location data from client IP, maps it interactively, and queries the local 3-day climate forecast.</p>
+        </header>
+
+        <!-- Loading State -->
+        <div class="state-container" id="loadingState">
+            <div class="loader"></div>
+            <p>Analyzing client IP address & fetching local climate...</p>
+        </div>
+
+        <!-- Error State -->
+        <div class="state-container error-container hidden" id="errorState">
+            <div class="error-icon"><i data-lucide="alert-triangle"></i></div>
+            <h3>Unable to fetch location/weather data</h3>
+            <p id="errorMessage">Please check your internet connection or disable ad-blockers blocking IP geolocation APIs.</p>
+            <button class="btn-primary" onclick="initDashboard()"><i data-lucide="refresh-cw"></i> Retry Connection</button>
+        </div>
+
+        <!-- Dashboard Layout -->
+        <div class="dashboard-grid hidden" id="dashboardContent">
+            
+            <!-- Column 1: Geolocation Card -->
+            <div class="dashboard-card geo-card">
+                <div class="card-header">
+                    <div class="header-icon"><i data-lucide="map-pin"></i></div>
+                    <h2>Network Geolocation</h2>
+                </div>
+                
+                <div class="geo-details">
+                    <div class="geo-main">
+                        <div class="city-row">
+                            <span class="city-name" id="geoCity">Loading...</span>
+                            <span class="flag-icon" id="geoFlag">🇺🇸</span>
+                        </div>
+                        <span class="region-name" id="geoRegion">Loading...</span>
+                    </div>
+
+                    <div class="details-list">
+                        <div class="detail-row">
+                            <span class="label">IP Address</span>
+                            <span class="value font-mono" id="geoIP">...</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Coordinates</span>
+                            <span class="value" id="geoCoords">...</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">ISP / Provider</span>
+                            <span class="value" id="geoISP">...</span>
+                        </div>
+                        <div class="detail-row">
+                            <span class="label">Local Timezone</span>
+                            <span class="value" id="geoTimezone">...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Interactive Map Container -->
+                <div class="map-wrapper">
+                    <div id="map"></div>
+                </div>
+            </div>
+
+            <!-- Column 2: Weather Info Card -->
+            <div class="dashboard-card weather-card">
+                <div class="card-header">
+                    <div class="header-icon"><i data-lucide="cloud-sun"></i></div>
+                    <h2>Local Weather</h2>
+                </div>
+
+                <div class="weather-content">
+                    <div class="weather-temp-row">
+                        <div class="weather-visual">
+                            <div class="weather-icon-large" id="weatherIcon">
+                                <i data-lucide="sun" class="sun-glow"></i>
+                            </div>
+                            <span class="weather-desc" id="weatherDesc">Clear Sky</span>
+                        </div>
+                        <div class="temp-display">
+                            <span class="temp-number" id="weatherTemp">--</span>
+                            <span class="temp-unit">°C</span>
+                        </div>
+                    </div>
+
+                    <div class="weather-stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-icon"><i data-lucide="wind"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-label">Wind Speed</span>
+                                <span class="stat-value" id="weatherWind">-- km/h</span>
+                            </div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon"><i data-lucide="navigation"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-label">Wind Direction</span>
+                                <span class="stat-value" id="weatherWindDir">--</span>
+                            </div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon"><i data-lucide="thermometer"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-label">Feels Like</span>
+                                <span class="stat-value" id="weatherFeels">--°C</span>
+                            </div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-icon"><i data-lucide="clock"></i></div>
+                            <div class="stat-info">
+                                <span class="stat-label">Data Updated</span>
+                                <span class="stat-value" id="weatherTime">--</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 3-Day Forecast Section -->
+                    <div class="forecast-section">
+                        <h3>3-Day Forecast</h3>
+                        <div class="forecast-grid" id="forecastGrid">
+                            <!-- Populated via JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Row 3: Action Controls -->
+            <div class="dashboard-controls">
+                <button class="btn-refresh" onclick="initDashboard()">
+                    <i data-lucide="refresh-cw"></i>
+                    <span>Refresh Dashboard</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer style="margin-top: 40px; padding: 24px 0; border-top: 1px solid var(--border-color); text-align: center; font-size: 13px; color: var(--text-secondary); z-index: 10;">
+            <p>© 2026 30 Days of API Integrations | Developed by <b>Neer Bhardwaj</b> (<a href="mailto:codewithneerb@gmail.com" style="color: var(--accent); text-decoration: none;">codewithneerb@gmail.com</a>)</p>
+        </footer>
+    </div>
+
+    <!-- API Specification Info Modal -->
+    <div class="modal-overlay hidden" id="apiModal" onclick="closeApiModalOutside(event)">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2><i data-lucide="file-json"></i> Day 1 API Specifications</h2>
+                <button class="btn-close" onclick="toggleApiModal()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="api-spec-block">
+                    <h3>1. Client IP Geolocation API</h3>
+                    <p>Fetches geographical context, ISP coordinates, and timezone using the client's public IP address.</p>
+                    <div class="code-box">
+                        <span class="code-method">GET</span> http://ip-api.com/json/
+                    </div>
+                    <p class="api-fallback-note"><b>Fallback endpoint:</b> https://ipapi.co/json/ (for SSL support).</p>
+                </div>
+                
+                <div class="api-spec-block">
+                    <h3>2. Open-Meteo Weather API</h3>
+                    <p>Free, keyless meteorological forecast API. Queries specific coordinate parameters extracted from the Geolocation API.</p>
+                    <div class="code-box">
+                        <span class="code-method">GET</span> https://api.open-meteo.com/v1/forecast?latitude={lat}&longitude={lon}&current_weather=true&daily=temperature_2m_max,temperature_2m_min,weathercode&timezone=auto
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Leaflet.js Script for Maps -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="app.js"></script>
+</body>
+</html>

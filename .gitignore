@@ -1,0 +1,15 @@
+# System Files
+.DS_Store
+Thumbs.db
+
+# Python Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Temporary logs & scratch folders
+.gemini/
+brain/
+scratch/
+*.log

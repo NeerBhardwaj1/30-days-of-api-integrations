@@ -1,0 +1,392 @@
+/* Design Tokens & Theme Variables */
+:root {
+    --bg-dark: hsl(222, 47%, 6%);
+    --card-bg: hsla(223, 47%, 11%, 0.8);
+    --border-color: hsla(220, 20%, 25%, 0.4);
+    --border-hover: hsla(217, 91%, 60%, 0.4);
+    --text-primary: hsl(210, 40%, 98%);
+    --text-secondary: hsl(215, 20%, 65%);
+    --accent: hsl(217, 91%, 60%);
+    --accent-glow: hsla(217, 91%, 60%, 0.15);
+    --accent-gradient: linear-gradient(135deg, hsl(217, 91%, 60%), hsl(263, 90%, 60%));
+    --locked-bg: hsla(220, 30%, 10%, 0.5);
+    --font-outfit: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+}
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: var(--font-outfit);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* Background Ambient Glows */
+.decorations {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(150px);
+    opacity: 0.15;
+}
+
+.glow-1 {
+    width: 500px;
+    height: 500px;
+    background: hsl(217, 91%, 60%);
+    top: -200px;
+    right: -100px;
+}
+
+.glow-2 {
+    width: 600px;
+    height: 600px;
+    background: hsl(263, 90%, 60%);
+    bottom: -200px;
+    left: -200px;
+}
+
+/* Global Container */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    z-index: 1;
+}
+
+/* Header Section */
+header {
+    padding: 80px 0 40px;
+    border-bottom: 1px solid var(--border-color);
+    background: linear-gradient(180deg, hsla(222, 47%, 4%, 0.8) 0%, transparent 100%);
+    backdrop-filter: blur(10px);
+    z-index: 1;
+}
+
+.header-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.logo-area {
+    margin-bottom: 20px;
+}
+
+.badge {
+    display: inline-block;
+    background: var(--accent-glow);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-size: 11px;
+    font-weight: 800;
+    padding: 4px 12px;
+    border-radius: 50px;
+    letter-spacing: 1.5px;
+    margin-bottom: 15px;
+}
+
+header h1 {
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -1px;
+}
+
+.text-gradient {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    font-size: clamp(1rem, 2vw, 1.25rem);
+    color: var(--text-secondary);
+    max-width: 650px;
+    margin-top: 15px;
+    line-height: 1.6;
+    font-weight: 300;
+}
+
+.meta-row {
+    display: flex;
+    gap: 24px;
+    margin-top: 30px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    background: hsla(223, 47%, 15%, 0.4);
+    padding: 6px 16px;
+    border-radius: 50px;
+    border: 1px solid var(--border-color);
+}
+
+.meta-item svg {
+    width: 16px;
+    height: 16px;
+    color: var(--accent);
+}
+
+/* Dashboard Header & Controls */
+main {
+    flex: 1;
+    padding: 60px 0 80px;
+    position: relative;
+    z-index: 1;
+}
+
+.grid-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 40px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+}
+
+.grid-header h2 {
+    font-size: 24px;
+    font-weight: 600;
+}
+
+.legend {
+    display: flex;
+    gap: 20px;
+    font-size: 14px;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-secondary);
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.dot.active {
+    background: var(--accent);
+    box-shadow: 0 0 10px var(--accent);
+}
+
+.dot.locked {
+    background: hsl(220, 20%, 40%);
+}
+
+/* Days Grid Layout */
+.days-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 30px;
+}
+
+/* Base Card Styling */
+.day-card {
+    border-radius: 20px;
+    padding: 30px;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 1px solid var(--border-color);
+    text-decoration: none;
+}
+
+.day-badge {
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 15px;
+    display: inline-block;
+    align-self: flex-start;
+    padding: 4px 10px;
+    border-radius: 6px;
+}
+
+.card-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    line-height: 1.3;
+}
+
+.card-desc {
+    font-size: 14px;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    margin-bottom: 25px;
+    flex: 1;
+}
+
+.card-techs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 25px;
+}
+
+.tech-tag {
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 50px;
+    background: hsla(220, 30%, 15%, 0.6);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+/* Active Cards styling */
+.active-card {
+    background: var(--card-bg);
+    cursor: pointer;
+    box-shadow: 0 10px 30px -15px rgba(0,0,0,0.5);
+    backdrop-filter: blur(12px);
+}
+
+.active-card .day-badge {
+    background: var(--accent-glow);
+    color: var(--accent);
+    border: 1px solid hsla(217, 91%, 60%, 0.3);
+}
+
+.active-card .card-title {
+    color: var(--text-primary);
+}
+
+.card-glow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(800px circle at var(--x, 0px) var(--y, 0px), rgba(59, 130, 246, 0.08), transparent 40%);
+    opacity: 0;
+    transition: opacity 0.5s ease;
+    pointer-events: none;
+}
+
+.active-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--border-hover);
+    box-shadow: 0 20px 40px -15px rgba(0,0,0,0.7), 0 0 20px -5px var(--accent-glow);
+}
+
+.active-card:hover .card-glow {
+    opacity: 1;
+}
+
+.card-action {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-top: auto;
+    transition: transform 0.3s ease;
+}
+
+.card-action svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+}
+
+.active-card:hover .card-action svg {
+    transform: translateX(5px);
+}
+
+/* Locked Cards styling */
+.locked-card {
+    background: var(--locked-bg);
+    opacity: 0.5;
+    pointer-events: none;
+    border-style: dashed;
+}
+
+.locked-badge {
+    background: hsla(220, 10%, 25%, 0.4);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+}
+
+.locked-card .card-title {
+    color: var(--text-secondary);
+}
+
+.card-action-locked {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: auto;
+}
+
+.card-action-locked svg {
+    width: 14px;
+    height: 14px;
+}
+
+/* Footer styling */
+footer {
+    border-top: 1px solid var(--border-color);
+    padding: 40px 0;
+    text-align: center;
+    background: hsla(222, 47%, 4%, 0.8);
+    backdrop-filter: blur(10px);
+    font-size: 14px;
+    color: var(--text-secondary);
+    z-index: 1;
+}
+
+.footer-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    header {
+        padding: 50px 0 30px;
+    }
+    
+    .days-grid {
+        grid-template-columns: 1fr;
+    }
+}

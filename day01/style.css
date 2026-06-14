@@ -1,0 +1,793 @@
+/* CSS Design Variables */
+:root {
+    --bg-dark: hsl(224, 47%, 4%);
+    --card-bg: hsla(223, 47%, 9%, 0.75);
+    --border-color: hsla(220, 20%, 25%, 0.35);
+    --border-hover: hsla(217, 91%, 60%, 0.4);
+    --text-primary: hsl(210, 40%, 98%);
+    --text-secondary: hsl(215, 20%, 65%);
+    --accent: hsl(217, 91%, 60%);
+    --accent-glow: hsla(217, 91%, 60%, 0.15);
+    --accent-gradient: linear-gradient(135deg, hsl(217, 91%, 60%), hsl(190, 90%, 50%));
+    
+    --success: hsl(142, 71%, 45%);
+    --danger: hsl(346, 84%, 61%);
+    
+    --font-outfit: 'Outfit', sans-serif;
+}
+
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    font-family: var(--font-outfit);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+/* Background Ambient Glows */
+.decorations {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    pointer-events: none;
+    z-index: 0;
+    overflow: hidden;
+}
+
+.glow {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(140px);
+    opacity: 0.12;
+}
+
+.glow-1 {
+    width: 450px;
+    height: 450px;
+    background: hsl(217, 91%, 60%);
+    top: -100px;
+    right: -100px;
+}
+
+.glow-2 {
+    width: 500px;
+    height: 500px;
+    background: hsl(190, 90%, 50%);
+    bottom: -150px;
+    left: -150px;
+}
+
+/* Global Container */
+.container {
+    width: 100%;
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 24px;
+    z-index: 1;
+}
+
+.main-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Navigation */
+.top-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.btn-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 18px;
+    border-radius: 50px;
+    background: hsla(220, 20%, 20%, 0.3);
+    border: 1px solid var(--border-color);
+    transition: all 0.3s ease;
+}
+
+.btn-back svg {
+    width: 16px;
+    height: 16px;
+    transition: transform 0.3s ease;
+}
+
+.btn-back:hover {
+    color: var(--text-primary);
+    border-color: var(--text-secondary);
+}
+
+.btn-back:hover svg {
+    transform: translateX(-3px);
+}
+
+.nav-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.btn-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: hsla(220, 20%, 20%, 0.3);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
+    font-family: var(--font-outfit);
+    font-size: 14px;
+    font-weight: 500;
+    padding: 10px 18px;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-info:hover {
+    color: var(--text-primary);
+    border-color: var(--accent);
+    box-shadow: 0 0 10px var(--accent-glow);
+}
+
+.btn-info svg {
+    width: 16px;
+    height: 16px;
+}
+
+.day-badge {
+    background: var(--accent-glow);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 800;
+    padding: 8px 16px;
+    border-radius: 50px;
+    letter-spacing: 1px;
+}
+
+/* App Header */
+.app-header {
+    text-align: center;
+}
+
+.app-header h1 {
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.text-gradient {
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+    font-size: 15px;
+    color: var(--text-secondary);
+    margin-top: 10px;
+    font-weight: 300;
+}
+
+/* Loading & Error States */
+.state-container {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 80px 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    text-align: center;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 20px 40px -20px rgba(0,0,0,0.5);
+    min-height: 350px;
+}
+
+.loader {
+    width: 48px;
+    height: 48px;
+    border: 4px solid var(--border-color);
+    border-bottom-color: var(--accent);
+    border-radius: 50%;
+    animation: rotation 1s linear infinite;
+}
+
+@keyframes rotation {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.error-container h3 {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.error-container p {
+    color: var(--text-secondary);
+    max-width: 400px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.error-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: hsla(346, 84%, 61%, 0.15);
+    border: 1px solid var(--danger);
+    color: var(--danger);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.error-icon svg {
+    width: 28px;
+    height: 28px;
+}
+
+.btn-primary {
+    background: var(--accent);
+    border: none;
+    color: white;
+    font-family: var(--font-outfit);
+    font-weight: 600;
+    padding: 12px 24px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    transition: transform 0.2s, background 0.3s;
+}
+
+.btn-primary:hover {
+    background: hsl(217, 100%, 65%);
+    transform: translateY(-2px);
+}
+
+.btn-primary svg {
+    width: 16px;
+    height: 16px;
+}
+
+/* Dashboard Grid Layout */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 30px;
+    width: 100%;
+}
+
+.dashboard-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 24px;
+    padding: 30px;
+    backdrop-filter: blur(12px);
+    box-shadow: 0 10px 35px -15px rgba(0,0,0,0.5);
+    display: flex;
+    flex-direction: column;
+    transition: border-color 0.3s ease;
+}
+
+.dashboard-card:hover {
+    border-color: var(--border-hover);
+}
+
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+}
+
+.header-icon {
+    background: var(--accent-glow);
+    border: 1px solid var(--accent);
+    color: var(--accent);
+    width: 36px;
+    height: 36px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.header-icon svg {
+    width: 18px;
+    height: 18px;
+}
+
+.card-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+/* Geolocation Details styles */
+.geo-main {
+    margin-bottom: 24px;
+}
+
+.city-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.city-name {
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.2;
+}
+
+.flag-icon {
+    font-size: 28px;
+}
+
+.region-name {
+    display: block;
+    font-size: 14px;
+    color: var(--text-secondary);
+    margin-top: 4px;
+}
+
+.details-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px dashed var(--border-color);
+    padding-bottom: 10px;
+}
+
+.detail-row:last-child {
+    border: none;
+    padding-bottom: 0;
+}
+
+.detail-row .label {
+    font-size: 13px;
+    color: var(--text-secondary);
+}
+
+.detail-row .value {
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.font-mono {
+    font-family: monospace;
+}
+
+/* Map Wrapper & Styling */
+.map-wrapper {
+    position: relative;
+    width: 100%;
+    height: 220px;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border-color);
+    margin-top: auto;
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+/* Dark mode Leaflet tile colors */
+.leaflet-container {
+    background-color: var(--bg-dark) !important;
+}
+
+.leaflet-tile-container img {
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+}
+
+.leaflet-bar a {
+    background-color: hsla(223, 47%, 15%, 0.8) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* Weather Card styles */
+.weather-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.weather-temp-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.weather-visual {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.weather-icon-large {
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+}
+
+.weather-icon-large svg {
+    width: 54px;
+    height: 54px;
+}
+
+.weather-desc {
+    font-size: 16px;
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.temp-display {
+    display: flex;
+    align-items: flex-start;
+}
+
+.temp-number {
+    font-size: 64px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -2px;
+}
+
+.temp-unit {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--accent);
+    margin-top: 4px;
+    margin-left: 2px;
+}
+
+/* Weather Stats Grid styles */
+.weather-stats-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.stat-box {
+    background: hsla(220, 20%, 18%, 0.25);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.stat-icon {
+    color: var(--accent);
+    background: hsla(217, 91%, 60%, 0.08);
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-icon svg {
+    width: 16px;
+    height: 16px;
+}
+
+.stat-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 11px;
+    color: var(--text-secondary);
+}
+
+.stat-value {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+/* Forecast Section */
+.forecast-section {
+    border-top: 1px solid var(--border-color);
+    padding-top: 20px;
+    margin-top: auto;
+}
+
+.forecast-section h3 {
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-secondary);
+    margin-bottom: 12px;
+}
+
+.forecast-grid {
+    display: flex;
+    gap: 12px;
+    justify-content: space-between;
+}
+
+.forecast-card {
+    flex: 1;
+    background: hsla(220, 20%, 18%, 0.25);
+    border: 1px solid var(--border-color);
+    border-radius: 14px;
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-align: center;
+}
+
+.forecast-day {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-secondary);
+}
+
+.forecast-icon {
+    color: var(--accent);
+    margin: 4px 0;
+}
+
+.forecast-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.forecast-temps {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.forecast-max {
+    color: var(--text-primary);
+}
+
+.forecast-min {
+    color: var(--text-secondary);
+    margin-left: 4px;
+}
+
+/* Controls row */
+.dashboard-controls {
+    grid-column: span 2;
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+.btn-refresh {
+    background: hsla(220, 20%, 20%, 0.3);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-family: var(--font-outfit);
+    font-weight: 600;
+    font-size: 14px;
+    padding: 14px 28px;
+    border-radius: 50px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-refresh:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px var(--accent-glow);
+}
+
+.btn-refresh svg {
+    width: 16px;
+    height: 16px;
+}
+
+.btn-refresh:active svg {
+    transform: rotate(180deg);
+}
+
+/* API Specification Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(4, 9, 20, 0.75);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.3s ease;
+}
+
+.modal-card {
+    background: hsl(223, 47%, 9%);
+    border: 1px solid var(--border-color);
+    width: 90%;
+    max-width: 580px;
+    border-radius: 24px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.8);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    animation: modalSlide 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes modalSlide {
+    0% { transform: translateY(20px); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.modal-header h2 svg {
+    color: var(--accent);
+    width: 20px;
+    height: 20px;
+}
+
+.btn-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-close:hover {
+    color: var(--text-primary);
+}
+
+.btn-close svg {
+    width: 20px;
+    height: 20px;
+}
+
+.modal-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-height: 70vh;
+    overflow-y: auto;
+}
+
+.api-spec-block h3 {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.api-spec-block p {
+    font-size: 13px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+    margin-bottom: 12px;
+}
+
+.api-fallback-note {
+    font-size: 11px !important;
+    margin-top: 6px;
+    color: var(--text-secondary);
+}
+
+.code-box {
+    background: hsla(220, 20%, 5%, 0.8);
+    border: 1px solid var(--border-color);
+    padding: 12px;
+    border-radius: 8px;
+    font-family: monospace;
+    font-size: 12px;
+    word-break: break-all;
+    line-height: 1.4;
+    color: var(--text-primary);
+}
+
+.code-method {
+    background: var(--accent-glow);
+    color: var(--accent);
+    font-weight: bold;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-right: 6px;
+    font-size: 10px;
+}
+
+/* Utilities */
+.hidden {
+    display: none !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-controls {
+        grid-column: span 1;
+    }
+    
+    .forecast-grid {
+        flex-direction: column;
+    }
+}
+
+/* Animations */
+.sun-glow {
+    animation: spin 20s linear infinite;
+}
+
+@keyframes spin {
+    100% { transform: rotate(360deg); }
+}

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>30 Days of API Integrations 🚀</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons for premium details -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="decorations">
+        <div class="glow glow-1"></div>
+        <div class="glow glow-2"></div>
+    </div>
+
+    <header>
+        <div class="container header-container">
+            <div class="logo-area">
+                <span class="badge">CHALLENGE</span>
+                <h1>30 Days of <span class="text-gradient">API Integrations</span></h1>
+            </div>
+            <p class="subtitle">Building one micro-app daily, integrating two distinct APIs to create smart interactive dashboards.</p>
+            <div class="meta-row">
+                <div class="meta-item"><i data-lucide="github"></i> github.com/neer</div>
+                <div class="meta-item"><i data-lucide="calendar"></i> June 2026</div>
+                <div class="meta-item"><i data-lucide="check-circle-2"></i> Progress: 1/30</div>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="grid-header">
+            <h2>Challenge Dashboard</h2>
+            <div class="legend">
+                <span class="legend-item"><span class="dot active"></span> Completed</span>
+                <span class="legend-item"><span class="dot locked"></span> Locked</span>
+            </div>
+        </div>
+
+        <div class="days-grid" id="daysGrid">
+            <!-- Day 1 (Active) -->
+            <a href="day01/index.html" class="day-card active-card">
+                <div class="card-glow"></div>
+                <div class="day-badge">DAY 01</div>
+                <h3 class="card-title">IP Geolocation & Live Weather</h3>
+                <p class="card-desc">Detects the client's current location via IP coordinates, then queries real-time local weather forecasts.</p>
+                <div class="card-techs">
+                    <span class="tech-tag">IP-API</span>
+                    <span class="tech-tag">Open-Meteo</span>
+                </div>
+                <div class="card-action">
+                    <span>Explore Project</span>
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+
+            <!-- Day 2 to 30 (Locked) -->
+            <!-- We generate placeholders for days 2-30 -->
+            <div id="lockedDaysPlaceholder"></div>
+        </div>
+    </main>
+
+    <footer>
+        <div class="container footer-content">
+            <p>© 2026 30 Days of API Integrations. Built in Public by <b>Neer Bhardwaj</b> (<a href="mailto:codewithneerb@gmail.com" style="color: var(--accent); text-decoration: none;">codewithneerb@gmail.com</a>)</p>
+            <p>Designed with premium aesthetics using Vanilla CSS & JS.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Populate mysterious locked days (Days 2 to 30)
+        const lockedDaysPlaceholder = document.getElementById('lockedDaysPlaceholder');
+        let html = '';
+        for (let i = 2; i <= 30; i++) {
+            const dayStr = i < 10 ? `Day 0${i}` : `Day ${i}`;
+            html += `
+                <div class="day-card locked-card">
+                    <div class="day-badge locked-badge">${dayStr}</div>
+                    <h3 class="card-title">Mystery Challenge</h3>
+                    <p class="card-desc" style="font-size: 13px; color: var(--text-secondary); opacity: 0.6; margin-bottom: 20px;">Classified integration payload. API specs and design challenges will be decrypted and revealed when this day unlocks.</p>
+                    <div class="card-techs">
+                        <span class="tech-tag">???</span>
+                        <span class="tech-tag">???</span>
+                    </div>
+                    <div class="card-action-locked">
+                        <i data-lucide="lock"></i>
+                        <span>Encrypted</span>
+                    </div>
+                </div>
+            `;
+        }
+        lockedDaysPlaceholder.outerHTML = html;
+
+        // Initialize icons
+        lucide.createIcons();
+    </script>
+</body>
+</html>
