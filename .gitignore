@@ -13,3 +13,6 @@ __pycache__/
 brain/
 scratch/
 *.log
+
+# Keep local plan PDF off GitHub
+30_Days_of_API_Integration_Plan.pdf
