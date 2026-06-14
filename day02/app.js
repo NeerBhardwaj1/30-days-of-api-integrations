@@ -63,17 +63,15 @@ async function initDashboard() {
         }
 
         // Step 2: Fetch Initial ISS location to initialize Leaflet Map
-        const issResponse = await fetch('http://api.open-notify.org/iss-now.json');
+        const issResponse = await fetch('https://api.wheretheiss.at/v1/satellites/25544');
         if (!issResponse.ok) throw new Error("ISS live orbital tracker service is down");
         const issData = await issResponse.json();
 
-        if (issData.message !== "success") throw new Error("Invalid ISS telemetry data received");
-
-        const lat = parseFloat(issData.iss_position.latitude);
-        const lon = parseFloat(issData.iss_position.longitude);
+        const lat = parseFloat(issData.latitude);
+        const lon = parseFloat(issData.longitude);
 
         // Populate initial coordinates
-        updateCoordinatesUI(lat, lon);
+        updateCoordinatesUI(lat, lon, issData.velocity, issData.altitude);
 
         // Reveal dashboard layout
         loadingState.classList.add('hidden');
@@ -162,16 +160,16 @@ function startTelemetryPoll() {
 // Fetch live coordinates and update map
 async function fetchISSTelemetry() {
     try {
-        const res = await fetch('http://api.open-notify.org/iss-now.json');
+        const res = await fetch('https://api.wheretheiss.at/v1/satellites/25544');
         if (!res.ok) throw new Error("ISS request failed");
         const data = await res.json();
 
-        if (data.message === "success" && issMarker && issMap) {
-            const lat = parseFloat(data.iss_position.latitude);
-            const lon = parseFloat(data.iss_position.longitude);
+        if (issMarker && issMap) {
+            const lat = parseFloat(data.latitude);
+            const lon = parseFloat(data.longitude);
 
             // Update UI
-            updateCoordinatesUI(lat, lon);
+            updateCoordinatesUI(lat, lon, data.velocity, data.altitude);
 
             // Update Marker location
             issMarker.setLatLng([lat, lon]);
@@ -189,9 +187,18 @@ async function fetchISSTelemetry() {
 }
 
 // Update UI Labels
-function updateCoordinatesUI(lat, lon) {
+function updateCoordinatesUI(lat, lon, velocity, altitude) {
     document.getElementById('issLat').textContent = `${lat.toFixed(4)}° ${lat >= 0 ? 'N' : 'S'}`;
     document.getElementById('issLon').textContent = `${lon.toFixed(4)}° ${lon >= 0 ? 'E' : 'W'}`;
+    
+    if (velocity) {
+        const formattedVelocity = Math.round(velocity).toLocaleString();
+        document.getElementById('issVelocity').textContent = `${formattedVelocity} km/h`;
+    }
+    if (altitude) {
+        const formattedAltitude = Math.round(altitude).toLocaleString();
+        document.getElementById('issAltitude').textContent = `${formattedAltitude} km`;
+    }
 }
 
 // Add path trail coordinate helper
