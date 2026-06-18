@@ -37,7 +37,27 @@ Open **[http://localhost:8000](http://localhost:8000)** in your browser.
   * Live-updating dark map showing the International Space Station's real-time position.
   * 50-point dotted orbital flight path trail and countdown fetch timer.
 
-### 🔒 Days 03 - 30: Mystery Challenges
+### 🟢 Day 03: Cryptocurrency Live Prices & Fiat Converter
+* **APIs Integrated**:
+  1. [CoinGecko API](https://www.coingecko.com) — Live Market Tickers & Sparklines
+  2. [Frankfurter API](https://www.frankfurter.dev) — Foreign Exchange Rates
+* **Key Features**:
+  * Dynamic price feeds displaying 24h percentage changes and 7-day sparkline trend SVGs.
+  * Interactive Crypto-to-Fiat & Fiat-to-Crypto conversion calculator.
+  * Multi-fiat equivalent grid displaying asset values in 6 major currencies simultaneously.
+  * Persistent local cache fallback mechanism protecting against 429 rate limit errors.
+
+### 🟢 Day 04: Cats vs Dogs Vote Dashboard
+* **APIs Integrated**:
+  1. [The Cat API](https://thecatapi.com) — Random Feline Photos & Breeds
+  2. [Dog CEO API](https://dog.ceo/dog-api/) — Random Canine Photos & Breed Parsing
+* **Key Features**:
+  * Side-by-side candidates comparing random cats and dogs with custom breed formatting.
+  * Real-time voting button with automatic candidate refreshing on click.
+  * Visual standings tracker showing live vote distribution percentages and leading indicators.
+  * Local storage history grid displaying thumbnails of past voted pets.
+
+### 🔒 Days 05 - 30: Mystery Challenges
 * Locked API integrations and mystery challenges are encrypted in the dashboard portal. A new module will decrypt and unlock each day!
 
 ---
@@ -61,8 +81,16 @@ Open **[http://localhost:8000](http://localhost:8000)** in your browser.
 │   ├── index.html    # Day 1 dashboard HTML
 │   ├── style.css     # Day 1 CSS
 │   └── app.js        # Geolocation & weather logic
-└── day02/            # Day 2 project directory
-    ├── index.html    # Day 2 Space HTML
-    ├── style.css     # Day 2 CSS
-    └── app.js        # NASA & ISS tracker logic
+├── day02/            # Day 2 project directory
+│   ├── index.html    # Day 2 Space HTML
+│   ├── style.css     # Day 2 CSS
+│   └── app.js        # NASA & ISS tracker logic
+├── day03/            # Day 3 project directory
+│   ├── index.html    # Day 3 Crypto HTML
+│   ├── style.css     # Day 3 CSS
+│   └── app.js        # CoinGecko & Frankfurter logic
+└── day04/            # Day 4 project directory
+    ├── index.html    # Day 4 Pets HTML
+    ├── style.css     # Day 4 CSS
+    └── app.js        # Cat & Dog voting logic
 ```
