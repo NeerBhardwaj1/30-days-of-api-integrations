@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 3: Crypto Tracker & Fiat Converter 🪙</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="decorations">
+        <div class="glow glow-1"></div>
+        <div class="glow glow-2"></div>
+    </div>
+
+    <div class="container main-layout">
+        <!-- Navigation / Header -->
+        <nav class="top-nav">
+            <a href="../index.html" class="btn-back">
+                <i data-lucide="arrow-left"></i>
+                <span>Portal Dashboard</span>
+            </a>
+            <div class="nav-controls">
+                <button class="btn-info" onclick="toggleApiModal()">
+                    <i data-lucide="info"></i>
+                    <span>API Specs</span>
+                </button>
+                <div class="day-badge">DAY 03</div>
+            </div>
+        </nav>
+
+        <header class="app-header">
+            <h1>Crypto Prices & <span class="text-gradient">Fiat Converter</span></h1>
+            <p class="subtitle">Combines CoinGecko's live cryptocurrency market feeds with Frankfurter's real-time foreign exchange conversions.</p>
+        </header>
+
+        <!-- Status Indicator / Toast Banner for Fallbacks -->
+        <div class="status-banner hidden" id="statusBanner">
+            <div class="banner-content">
+                <i data-lucide="alert-circle" id="bannerIcon"></i>
+                <span id="bannerText">Using cached rates. API rate limits reached.</span>
+            </div>
+            <button class="banner-close" onclick="closeBanner()"><i data-lucide="x"></i></button>
+        </div>
+
+        <!-- Loading State -->
+        <div class="state-container" id="loadingState">
+            <div class="loader"></div>
+            <p>Fetching cryptocurrency tickers & global exchange rates...</p>
+        </div>
+
+        <!-- Error State (If both API and Cache fail completely) -->
+        <div class="state-container error-container hidden" id="errorState">
+            <div class="error-icon"><i data-lucide="alert-triangle"></i></div>
+            <h3>Failed to load market rates</h3>
+            <p id="errorMessage">Unable to connect to CoinGecko or Frankfurter servers, and no offline cache is available.</p>
+            <button class="btn-primary" onclick="initDashboard()"><i data-lucide="refresh-cw"></i> Retry Connection</button>
+        </div>
+
+        <!-- Dashboard Layout -->
+        <div class="dashboard-grid hidden" id="dashboardContent">
+            
+            <!-- Column 1: Cryptocurrency Tickers -->
+            <div class="dashboard-card crypto-list-card">
+                <div class="card-header">
+                    <div class="header-icon"><i data-lucide="trending-up"></i></div>
+                    <h2>Market Tickers</h2>
+                    <button class="btn-refresh" id="refreshBtn" onclick="refreshRates()">
+                        <i data-lucide="refresh-cw" id="refreshIcon"></i>
+                        <span id="refreshBtnText">Refresh</span>
+                    </button>
+                </div>
+
+                <div class="crypto-list-container">
+                    <div class="crypto-table-header">
+                        <span>Asset</span>
+                        <span style="text-align: right;">Price (USD)</span>
+                        <span style="text-align: right;">24h Change</span>
+                        <span style="text-align: center;">7-Day Trend</span>
+                    </div>
+                    <div class="crypto-items-list" id="cryptoList">
+                        <!-- Populated via JS -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Column 2: Converter & Stats Panel -->
+            <div class="converter-panel-group">
+                <!-- Card 2A: Interactive Converter -->
+                <div class="dashboard-card converter-card">
+                    <div class="card-header">
+                        <div class="header-icon"><i data-lucide="coins"></i></div>
+                        <h2>Conversion Calculator</h2>
+                        <div class="calc-mode-indicator" id="calcModeText">Crypto to Fiat</div>
+                    </div>
+
+                    <div class="converter-body">
+                        <!-- Input Group 1 -->
+                        <div class="input-block">
+                            <label id="inputLabel">Crypto Amount</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="inputAmount" value="1" step="any" min="0" oninput="calculateConversion()">
+                                <div class="asset-selector" id="inputAssetSelect">
+                                    <!-- Dynamic base selection -->
+                                    <img src="" alt="" id="selectedCryptoIcon" class="selected-asset-icon">
+                                    <span id="selectedCryptoSymbol">BTC</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Swapper Control -->
+                        <div class="swap-divider">
+                            <button class="btn-swap" onclick="swapConverterMode()" title="Swap conversion direction">
+                                <i data-lucide="arrow-up-down"></i>
+                            </button>
+                        </div>
+
+                        <!-- Input Group 2 -->
+                        <div class="input-block">
+                            <label id="outputLabel">Fiat Value</label>
+                            <div class="input-wrapper">
+                                <input type="number" id="outputAmount" value="0" step="any" min="0" oninput="calculateReverseConversion()">
+                                <select class="fiat-selector" id="fiatSelect" onchange="calculateConversion()">
+                                    <option value="USD" selected>USD - US Dollar</option>
+                                    <option value="EUR">EUR - Euro</option>
+                                    <option value="GBP">GBP - British Pound</option>
+                                    <option value="JPY">JPY - Japanese Yen</option>
+                                    <option value="AUD">AUD - Australian Dollar</option>
+                                    <option value="CAD">CAD - Canadian Dollar</option>
+                                    <option value="CHF">CHF - Swiss Franc</option>
+                                    <option value="CNY">CNY - Chinese Yuan</option>
+                                    <option value="INR">INR - Indian Rupee</option>
+                                    <option value="MXN">MXN - Mexican Peso</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Card 2B: Multi-Fiat Valuation & Market Details -->
+                <div class="dashboard-card stats-card">
+                    <div class="card-header">
+                        <div class="header-icon"><i data-lucide="bar-chart-3"></i></div>
+                        <h2>Asset Valuation & Market Info</h2>
+                    </div>
+
+                    <div class="stats-body">
+                        <!-- Stat Highlights -->
+                        <div class="market-stats-row">
+                            <div class="metric-box">
+                                <span class="metric-label">Market Cap Rank</span>
+                                <span class="metric-value" id="statRank">#1</span>
+                            </div>
+                            <div class="metric-box">
+                                <span class="metric-label">24h High</span>
+                                <span class="metric-value font-mono" id="statHigh">$0.00</span>
+                            </div>
+                            <div class="metric-box">
+                                <span class="metric-label">24h Low</span>
+                                <span class="metric-value font-mono" id="statLow">$0.00</span>
+                            </div>
+                        </div>
+
+                        <!-- Multi-Fiat conversion breakdown -->
+                        <div class="multi-fiat-section">
+                            <h3>Equivalent Fiat Valuations</h3>
+                            <div class="multi-fiat-grid" id="multiFiatGrid">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer style="margin-top: 40px; padding: 24px 0; border-top: 1px solid var(--border-color); text-align: center; font-size: 13px; color: var(--text-secondary); z-index: 10;">
+            <p>© 2026 30 Days of API Integrations | Developed by <b>Neer Bhardwaj</b> (<a href="mailto:codewithneerb@gmail.com" style="color: var(--accent); text-decoration: none;">codewithneerb@gmail.com</a>)</p>
+        </footer>
+    </div>
+
+    <!-- API Specification Info Modal -->
+    <div class="modal-overlay hidden" id="apiModal" onclick="closeApiModalOutside(event)">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2><i data-lucide="file-json"></i> Day 3 API Specifications</h2>
+                <button class="btn-close" onclick="toggleApiModal()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="api-spec-block">
+                    <h3>1. CoinGecko Public Markets API</h3>
+                    <p>Retrieves live market prices, capitalization ranks, 24-hour highs/lows, icons, and 7-day sparkline coordinates for top-tier digital assets.</p>
+                    <div class="code-box">
+                        <span class="code-method">GET</span> https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&ids=bitcoin,ethereum,solana,ripple,cardano,dogecoin,polkadot,chainlink&sparkline=true
+                    </div>
+                </div>
+                
+                <div class="api-spec-block">
+                    <h3>2. Frankfurter exchange rates API</h3>
+                    <p>A keyless, open currency rate registry providing foreign exchange conversion parameters with USD as the anchor currency.</p>
+                    <div class="code-box">
+                        <span class="code-method">GET</span> https://api.frankfurter.dev/v2/latest?base=USD
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

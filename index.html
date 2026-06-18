@@ -28,7 +28,7 @@
             <div class="meta-row">
                 <div class="meta-item"><i data-lucide="github"></i> github.com/neer</div>
                 <div class="meta-item"><i data-lucide="calendar"></i> June 2026</div>
-                <div class="meta-item"><i data-lucide="check-circle-2"></i> Progress: 1/30</div>
+                <div class="meta-item"><i data-lucide="check-circle-2"></i> Progress: 2/30</div>
             </div>
         </div>
     </header>
@@ -75,8 +75,24 @@
                 </div>
             </a>
 
-            <!-- Day 3 to 30 (Locked) -->
-            <!-- We generate placeholders for days 3-30 -->
+            <!-- Day 3 (Active) -->
+            <a href="day03/index.html" class="day-card active-card">
+                <div class="card-glow"></div>
+                <div class="day-badge">DAY 03</div>
+                <h3 class="card-title">Crypto Prices & Fiat Converter</h3>
+                <p class="card-desc">Tracks real-time cryptocurrency values and converts them dynamically across various global fiat currencies using live exchange rates.</p>
+                <div class="card-techs">
+                    <span class="tech-tag">CoinGecko</span>
+                    <span class="tech-tag">Frankfurter</span>
+                </div>
+                <div class="card-action">
+                    <span>Explore Project</span>
+                    <i data-lucide="arrow-right"></i>
+                </div>
+            </a>
+
+            <!-- Day 4 to 30 (Locked) -->
+            <!-- We generate placeholders for days 4-30 -->
             <div id="lockedDaysPlaceholder"></div>
         </div>
     </main>
@@ -89,10 +105,10 @@
     </footer>
 
     <script>
-        // Populate mysterious locked days (Days 3 to 30)
+        // Populate mysterious locked days (Days 4 to 30)
         const lockedDaysPlaceholder = document.getElementById('lockedDaysPlaceholder');
         let html = '';
-        for (let i = 3; i <= 30; i++) {
+        for (let i = 4; i <= 30; i++) {
             const dayStr = i < 10 ? `Day 0${i}` : `Day ${i}`;
             html += `
                 <div class="day-card locked-card">
