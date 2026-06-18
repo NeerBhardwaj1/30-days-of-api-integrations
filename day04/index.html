@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 4: Cats vs Dogs Vote Dashboard 🐾</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="decorations">
+        <div class="glow glow-cat"></div>
+        <div class="glow glow-dog"></div>
+    </div>
+
+    <div class="container main-layout">
+        <!-- Navigation / Header -->
+        <nav class="top-nav">
+            <a href="../index.html" class="btn-back">
+                <i data-lucide="arrow-left"></i>
+                <span>Portal Dashboard</span>
+            </a>
+            <div class="nav-controls">
+                <button class="btn-info" onclick="toggleApiModal()">
+                    <i data-lucide="info"></i>
+                    <span>API Specs</span>
+                </button>
+                <div class="day-badge">DAY 04</div>
+            </div>
+        </nav>
+
+        <header class="app-header">
+            <h1>Cats vs Dogs <span class="text-gradient">Vote Dashboard</span></h1>
+            <p class="subtitle">Fetches random pet photos from The Cat API & Dog CEO API side-by-side. Vote for your favorite to update the live standings!</p>
+        </header>
+
+        <!-- Status Banner for offline/fallback modes -->
+        <div class="status-banner hidden" id="statusBanner">
+            <div class="banner-content">
+                <i data-lucide="alert-circle" id="bannerIcon"></i>
+                <span id="bannerText">Using backup pet library. Network requests failed.</span>
+            </div>
+            <button class="banner-close" onclick="closeBanner()"><i data-lucide="x"></i></button>
+        </div>
+
+        <!-- Main Versus Dashboard -->
+        <div class="versus-grid">
+            
+            <!-- Team Cat Side -->
+            <div class="team-card team-cat" id="catCard">
+                <div class="card-glow-team"></div>
+                <div class="team-badge-row">
+                    <span class="pet-badge badge-cat"><i data-lucide="cat"></i> Team Cat</span>
+                    <div class="vote-count-display font-mono" id="catVotes">0</div>
+                </div>
+
+                <div class="pet-image-wrapper">
+                    <img id="catImg" src="" alt="Random Cat" class="hidden">
+                    <div class="media-loader" id="catLoader">
+                        <div class="loader-pulse loader-cat"></div>
+                        <span>Calling whiskers...</span>
+                    </div>
+                </div>
+
+                <div class="pet-info">
+                    <h3 id="catBreed">Domestic Shorthair</h3>
+                    <p class="api-source">via The Cat API</p>
+                </div>
+
+                <button class="btn-vote btn-vote-cat" onclick="vote('cat')">
+                    <i data-lucide="heart"></i>
+                    <span>Vote Cat</span>
+                </button>
+
+                <!-- History Row -->
+                <div class="history-section">
+                    <h4>Voted Cats</h4>
+                    <div class="history-list" id="catHistory">
+                        <!-- Populated by JS -->
+                        <span class="no-history">No votes yet</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VS Center Badge -->
+            <div class="vs-divider">
+                <div class="vs-circle">VS</div>
+            </div>
+
+            <!-- Team Dog Side -->
+            <div class="team-card team-dog" id="dogCard">
+                <div class="card-glow-team"></div>
+                <div class="team-badge-row">
+                    <span class="pet-badge badge-dog"><i data-lucide="dog"></i> Team Dog</span>
+                    <div class="vote-count-display font-mono" id="dogVotes">0</div>
+                </div>
+
+                <div class="pet-image-wrapper">
+                    <img id="dogImg" src="" alt="Random Dog" class="hidden">
+                    <div class="media-loader" id="dogLoader">
+                        <div class="loader-pulse loader-dog"></div>
+                        <span>Calling paws...</span>
+                    </div>
+                </div>
+
+                <div class="pet-info">
+                    <h3 id="dogBreed">Golden Retriever</h3>
+                    <p class="api-source">via Dog CEO API</p>
+                </div>
+
+                <button class="btn-vote btn-vote-dog" onclick="vote('dog')">
+                    <i data-lucide="heart"></i>
+                    <span>Vote Dog</span>
+                </button>
+
+                <!-- History Row -->
+                <div class="history-section">
+                    <h4>Voted Dogs</h4>
+                    <div class="history-list" id="dogHistory">
+                        <!-- Populated by JS -->
+                        <span class="no-history">No votes yet</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Standing Stats Bar -->
+        <div class="dashboard-card standings-card">
+            <div class="card-header">
+                <div class="header-icon"><i data-lucide="bar-chart-2"></i></div>
+                <h2>Live Standings</h2>
+                <div class="match-status-pill" id="matchStatus">Tie Match</div>
+            </div>
+            
+            <div class="standings-body">
+                <div class="progress-bar-container">
+                    <div class="progress-bar-label">
+                        <span>Cats (<span id="catPercent">50</span>%)</span>
+                        <span>Dogs (<span id="dogPercent">50</span>%)</span>
+                    </div>
+                    <div class="progress-bar-track">
+                        <div class="progress-fill fill-cat" id="catFill" style="width: 50%;"></div>
+                        <div class="progress-fill fill-dog" id="dogFill" style="width: 50%;"></div>
+                    </div>
+                </div>
+
+                <div class="control-actions">
+                    <button class="btn-action btn-skip" onclick="skipRound()">
+                        <i data-lucide="shuffle"></i>
+                        <span>Next Candidates</span>
+                    </button>
+                    <button class="btn-action btn-reset" onclick="resetVotes()">
+                        <i data-lucide="trash-2"></i>
+                        <span>Reset Records</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer style="margin-top: 40px; padding: 24px 0; border-top: 1px solid var(--border-color); text-align: center; font-size: 13px; color: var(--text-secondary); z-index: 10;">
+            <p>© 2026 30 Days of API Integrations | Developed by <b>Neer Bhardwaj</b> (<a href="mailto:codewithneerb@gmail.com" style="color: var(--accent); text-decoration: none;">codewithneerb@gmail.com</a>)</p>
+        </footer>
+    </div>
+
+    <!-- API Specification Info Modal -->
+    <div class="modal-overlay hidden" id="apiModal" onclick="closeApiModalOutside(event)">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2><i data-lucide="file-json"></i> Day 4 API Specifications</h2>
+                <button class="btn-close" onclick="toggleApiModal()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="api-spec-block">
+                    <h3>1. The Cat API</h3>
+                    <p>A public keyless registry providing randomized cat imagery, dimensions, and optional breed specifications.</p>
+                    <div class="code-box">
+                        <span class="code-method">GET</span> https://api.thecatapi.com/v1/images/search
+                    </div>
+                </div>
+                
+                <div class="api-spec-block">
+                    <h3>2. Dog CEO API</h3>
+                    <p>A comprehensive open database of dog breeds and sub-breeds returning random photos categorized by structural path strings.</p>
+                    <div class="code-box">
+                        <span class="code-method">GET</span> https://dog.ceo/api/breeds/image/random
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
