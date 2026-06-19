@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 5: Motivational Quote Card Generator 🎨</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Courier+Prime:ital,wght@0,400;0,700;1,400;1,700&family=Caveat:wght@400..700&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="decorations">
+        <div class="glow glow-1"></div>
+        <div class="glow glow-2"></div>
+    </div>
+
+    <div class="container main-layout">
+        <!-- Navigation / Header -->
+        <nav class="top-nav">
+            <a href="../index.html" class="btn-back">
+                <i data-lucide="arrow-left"></i>
+                <span>Portal Dashboard</span>
+            </a>
+            <div class="nav-controls">
+                <button class="btn-info" onclick="toggleApiModal()">
+                    <i data-lucide="info"></i>
+                    <span>API Specs</span>
+                </button>
+                <button class="btn-key" onclick="toggleKeyModal()">
+                    <i data-lucide="key"></i>
+                    <span>Unsplash Key</span>
+                </button>
+                <div class="day-badge">DAY 05</div>
+            </div>
+        </nav>
+
+        <header class="app-header">
+            <h1>Quote Card <span class="text-gradient">Generator</span></h1>
+            <p class="subtitle">Fetch inspiring wisdom from ZenQuotes, overlay it on high-res photography search from Unsplash, customize aesthetics, and export as a social-ready post image.</p>
+        </header>
+
+        <!-- Status Banner for alerts -->
+        <div class="status-banner hidden" id="statusBanner">
+            <div class="banner-content">
+                <i data-lucide="alert-circle" id="bannerIcon"></i>
+                <span id="bannerText">Using backup quote library. Network request failed.</span>
+            </div>
+            <button class="banner-close" onclick="closeBanner()"><i data-lucide="x"></i></button>
+        </div>
+
+        <!-- Main Workspace -->
+        <div class="editor-grid">
+            
+            <!-- Left Panel: Controls -->
+            <div class="control-panel">
+                
+                <!-- Quote Section -->
+                <div class="control-card">
+                    <div class="card-header-simple">
+                        <i data-lucide="quote"></i>
+                        <h3>1. Content & Text</h3>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button class="btn-primary w-full" id="btnFetchQuote" onclick="fetchQuote()">
+                            <i data-lucide="sparkles"></i>
+                            <span>Fetch Random Quote</span>
+                        </button>
+                    </div>
+
+                    <div class="divider"><span>OR CUSTOMIZE TEXT</span></div>
+
+                    <div class="form-group">
+                        <label for="quoteInput">Quote Text</label>
+                        <textarea id="quoteInput" rows="3" placeholder="Type or paste your quote here..." oninput="updatePreview()"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="authorInput">Author</label>
+                        <input type="text" id="authorInput" placeholder="Author name" oninput="updatePreview()">
+                    </div>
+                </div>
+
+                <!-- Background Image Section -->
+                <div class="control-card">
+                    <div class="card-header-simple">
+                        <i data-lucide="image"></i>
+                        <h3>2. Background Image</h3>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Search Unsplash</label>
+                        <div class="search-box">
+                            <input type="text" id="imageSearchInput" placeholder="Search (e.g. nature, stars, calm)..." onkeydown="handleSearchKey(event)">
+                            <button class="btn-search" onclick="searchImages()">
+                                <i data-lucide="search"></i>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="tag-row" id="tagRow">
+                        <span class="tag-pill active" onclick="selectTag('Nature')">Nature</span>
+                        <span class="tag-pill" onclick="selectTag('Stars')">Stars</span>
+                        <span class="tag-pill" onclick="selectTag('Mountain')">Mountain</span>
+                        <span class="tag-pill" onclick="selectTag('Ocean')">Ocean</span>
+                        <span class="tag-pill" onclick="selectTag('Abstract')">Abstract</span>
+                        <span class="tag-pill" onclick="selectTag('Minimal')">Minimal</span>
+                    </div>
+
+                    <!-- Search Result Grid (hidden by default until search) -->
+                    <div class="image-results-container hidden" id="resultsContainer">
+                        <div class="results-header">
+                            <span>Search Results</span>
+                            <button class="btn-close-small" onclick="hideSearchResults()"><i data-lucide="x"></i></button>
+                        </div>
+                        <div class="image-results-grid" id="imageResultsGrid">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <!-- Curated Fallbacks/Defaults -->
+                    <div class="curated-container" id="curatedContainer">
+                        <label>Quick Presets</label>
+                        <div class="curated-presets-grid" id="presetsGrid">
+                            <!-- Populated dynamically with thumbnails -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Typography & Style Options -->
+                <div class="control-card">
+                    <div class="card-header-simple">
+                        <i data-lucide="sliders"></i>
+                        <h3>3. Typography & Styling</h3>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label for="fontFamilySelect">Font Family</label>
+                            <select id="fontFamilySelect" onchange="updatePreview()">
+                                <option value="'Playfair Display', serif" selected>Playfair Serif</option>
+                                <option value="'Outfit', sans-serif">Outfit Sans</option>
+                                <option value="'Montserrat', sans-serif">Montserrat Bold</option>
+                                <option value="'Courier Prime', monospace">Courier Retro</option>
+                                <option value="'Caveat', cursive">Caveat Handwritten</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="textColorInput">Text Color</label>
+                            <div class="color-picker-wrapper">
+                                <input type="color" id="textColorInput" value="#ffffff" oninput="updatePreview()">
+                                <span class="color-value" id="textColorVal">#FFFFFF</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row-2">
+                        <div class="form-group">
+                            <label>Text Alignment</label>
+                            <div class="radio-toggle-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="textAlign" value="left" onchange="updatePreview()">
+                                    <i data-lucide="align-left"></i>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="textAlign" value="center" checked onchange="updatePreview()">
+                                    <i data-lucide="align-center"></i>
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="textAlign" value="right" onchange="updatePreview()">
+                                    <i data-lucide="align-right"></i>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Text Layout</label>
+                            <div class="radio-toggle-group">
+                                <label class="radio-label" title="Show Quote Marks">
+                                    <input type="checkbox" id="toggleQuotes" checked onchange="updatePreview()">
+                                    <i data-lucide="quote"></i>
+                                </label>
+                                <label class="radio-label" title="Show Watermark">
+                                    <input type="checkbox" id="toggleWatermark" checked onchange="updatePreview()">
+                                    <i data-lucide="milestone"></i>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Font Size</span>
+                            <span id="fontSizeVal">24px</span>
+                        </div>
+                        <input type="range" id="fontSizeSlider" min="16" max="42" value="24" oninput="updatePreview()">
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Overlay Darknss</span>
+                            <span id="overlayVal">45%</span>
+                        </div>
+                        <input type="range" id="overlaySlider" min="10" max="90" value="45" oninput="updatePreview()">
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Background Blur</span>
+                            <span id="blurVal">0px</span>
+                        </div>
+                        <input type="range" id="blurSlider" min="0" max="15" value="0" oninput="updatePreview()">
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-label">
+                            <span>Text Shadow</span>
+                            <span id="shadowVal">4px</span>
+                        </div>
+                        <input type="range" id="shadowSlider" min="0" max="12" value="4" oninput="updatePreview()">
+                    </div>
+                </div>
+
+                <!-- Export Actions -->
+                <button class="btn-action w-full btn-download" onclick="downloadCard()">
+                    <i data-lucide="download"></i>
+                    <span>Download Image (1080x1080)</span>
+                </button>
+            </div>
+
+            <!-- Right Panel: Live Preview -->
+            <div class="preview-panel">
+                <div class="preview-header">
+                    <span class="preview-indicator"><span class="pulse-dot"></span> LIVE PREVIEW</span>
+                    <button class="btn-icon-only" onclick="resetStyles()" title="Reset styles"><i data-lucide="rotate-ccw"></i></button>
+                </div>
+                
+                <div class="card-viewport">
+                    <!-- The Actual Motivational Quote Card (1:1 Ratio) -->
+                    <div class="quote-card-preview" id="quoteCard">
+                        <div class="card-image-bg" id="cardBg"></div>
+                        <div class="card-overlay" id="cardOverlay"></div>
+                        
+                        <div class="card-body-content" id="cardBody">
+                            <div class="card-quote-mark top-quote" id="quoteMarkTop"><i data-lucide="quote"></i></div>
+                            <h2 class="card-quote-text" id="quotePreviewText">Life is what happens when you're busy making other plans.</h2>
+                            <p class="card-quote-author" id="quotePreviewAuthor">— John Lennon</p>
+                        </div>
+                        
+                        <div class="card-watermark" id="cardWatermark">
+                            <span>30 Days of APIs • Day 05</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-tips">
+                    <i data-lucide="help-circle"></i>
+                    <p>Generated image runs in <b>1080x1080 Ultra-HD</b>, perfect for Instagram, LinkedIn, or Twitter.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer style="margin-top: 40px; padding: 24px 0; border-top: 1px solid var(--border-color); text-align: center; font-size: 13px; color: var(--text-secondary); z-index: 10;">
+            <p>© 2026 30 Days of API Integrations | Developed by <b>Neer Bhardwaj</b> (<a href="mailto:codewithneerb@gmail.com" style="color: var(--accent); text-decoration: none;">codewithneerb@gmail.com</a>)</p>
+        </footer>
+    </div>
+
+    <!-- API Specification Info Modal -->
+    <div class="modal-overlay hidden" id="apiModal" onclick="closeApiModalOutside(event)">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2><i data-lucide="file-json"></i> Day 5 API Specifications</h2>
+                <button class="btn-close" onclick="toggleApiModal()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="api-spec-block">
+                    <h3>1. ZenQuotes API</h3>
+                    <p>A public REST resource returning randomized philosophical quote payloads. Bypasses CORS via the AllOrigins gateway wrapper, with immediate fallback to DummyJSON and local pre-packaged states.</p>
+                    <div class="code-box">
+                        <span class="code-method">GET</span> https://api.allorigins.win/get?url=https://zenquotes.io/api/random
+                    </div>
+                </div>
+                
+                <div class="api-spec-block">
+                    <h3>2. Unsplash API</h3>
+                    <p>A high-performance imagery database providing high-resolution photo searches based on user-supplied tags. Implements authentication via a customized Developer Access Key.</p>
+                    <div class="code-box">
+                        <span class="code-method">GET</span> https://api.unsplash.com/search/photos?query={query}&client_id={API_KEY}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Key Configuration Modal -->
+    <div class="modal-overlay hidden" id="keyModal" onclick="closeKeyModalOutside(event)">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2><i data-lucide="key-round"></i> Connect Unsplash API</h2>
+                <button class="btn-close" onclick="toggleKeyModal()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">By default, this tool uses a curated set of stunning offline presets. To search and fetch millions of custom wallpapers, connect your free Unsplash Access Key.</p>
+                
+                <div class="instructions-steps">
+                    <h4>How to get a free Unsplash API Key:</h4>
+                    <ol>
+                        <li>Sign up for a free developer account at <a href="https://unsplash.com/developers" target="_blank" rel="noopener">unsplash.com/developers</a>.</li>
+                        <li>Click <b>"New Application"</b> in your dashboard and agree to guidelines.</li>
+                        <li>Copy the <b>"Access Key"</b> from your app keys list and paste it below.</li>
+                    </ol>
+                </div>
+
+                <div class="form-group" style="margin-top: 10px;">
+                    <label for="unsplashKeyInput">Unsplash Access Key</label>
+                    <input type="password" id="unsplashKeyInput" placeholder="Paste your Access Key here...">
+                </div>
+
+                <div class="modal-actions-row">
+                    <button class="btn-primary" onclick="saveApiKey()">Save API Key</button>
+                    <button class="btn-secondary" onclick="clearApiKey()">Remove Key</button>
+                </div>
+                
+                <div class="key-status-row" id="keyStatusText">
+                    <i data-lucide="unlock" style="color: var(--text-secondary);"></i>
+                    <span>Currently using Curated Offline Presets.</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Canvas (Hidden) for generating high resolution card exports -->
+    <canvas id="exportCanvas" width="1080" height="1080" style="display: none;"></canvas>
+
+    <script src="app.js"></script>
+</body>
+</html>

@@ -57,7 +57,17 @@ Open **[http://localhost:8000](http://localhost:8000)** in your browser.
   * Visual standings tracker showing live vote distribution percentages and leading indicators.
   * Local storage history grid displaying thumbnails of past voted pets.
 
-### 🔒 Days 05 - 30: Mystery Challenges
+### 🟢 Day 05: Motivational Quote Card Generator
+* **APIs Integrated**:
+  1. [ZenQuotes API](https://zenquotes.io) — Motivational & Philosophical Quotes
+  2. [Unsplash API](https://unsplash.com/developers) — HD Photographic Backgrounds
+* **Key Features**:
+  * Multi-layer quote loader calling ZenQuotes (via AllOrigins CORS wrapper) -> DummyJSON API -> Local presets.
+  * Interactive background panel with Unsplash Access Key connector (local storage configuration) and categorized offline presets.
+  * Real-time sliders adjusting font family styles, font size, overlay opacity (readability), background blur, text alignment, and shadows.
+  * High-res canvas compiler drawing center-cropped images, text wrapping, and custom shadows to download 1080x1080 PNG graphics.
+
+### 🔒 Days 06 - 30: Mystery Challenges
 * Locked API integrations and mystery challenges are encrypted in the dashboard portal. A new module will decrypt and unlock each day!
 
 ---
