@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 6: Anime Explorer & Ghibli Cinema 🎬</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="decorations">
+        <div class="glow glow-jikan"></div>
+        <div class="glow glow-ghibli"></div>
+    </div>
+
+    <div class="container main-layout">
+        <!-- Navigation / Header -->
+        <nav class="top-nav">
+            <a href="../index.html" class="btn-back">
+                <i data-lucide="arrow-left"></i>
+                <span>Portal Dashboard</span>
+            </a>
+            <div class="nav-controls">
+                <button class="btn-info" onclick="toggleApiModal()">
+                    <i data-lucide="info"></i>
+                    <span>API Specs</span>
+                </button>
+                <div class="day-badge">DAY 06</div>
+            </div>
+        </nav>
+
+        <header class="app-header">
+            <h1>Anime & Ghibli <span class="text-gradient">Catalog Explorer</span></h1>
+            <p class="subtitle">Contrast modern currently airing anime shows from Jikan (MyAnimeList API) with the classic, heartwarming cinema archives of Studio Ghibli.</p>
+        </header>
+
+        <!-- Status Banner for API alerts -->
+        <div class="status-banner hidden" id="statusBanner">
+            <div class="banner-content">
+                <i data-lucide="alert-circle" id="bannerIcon"></i>
+                <span id="bannerText">Using local catalog. API rate limits reached.</span>
+            </div>
+            <button class="banner-close" onclick="closeBanner()"><i data-lucide="x"></i></button>
+        </div>
+
+        <!-- Split Grid Workspace -->
+        <div class="explorer-grid">
+            
+            <!-- Column 1: Jikan Anime Explorer (Modern Cyber Theme) -->
+            <div class="section-container modern-anime">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i data-lucide="zap" class="color-anime"></i>
+                        <h2>Currently Airing Anime</h2>
+                    </div>
+                    <span class="tech-indicator">via Jikan API</span>
+                </div>
+
+                <div class="search-row">
+                    <div class="search-input-wrapper">
+                        <i data-lucide="search" class="search-icon"></i>
+                        <input type="text" id="animeSearch" placeholder="Search modern anime..." onkeydown="handleAnimeSearchKey(event)">
+                    </div>
+                    <button class="btn-search" onclick="searchAnime()">Search</button>
+                </div>
+
+                <!-- Tabs -->
+                <div class="tab-row">
+                    <button class="tab-btn active" id="tabAiring" onclick="switchAnimeTab('airing')">⚡ Airing Now</button>
+                    <button class="tab-btn hidden" id="tabResults" onclick="switchAnimeTab('results')">🔍 Search Results</button>
+                </div>
+
+                <!-- Loading Spinner -->
+                <div class="loader-wrapper" id="animeLoader">
+                    <div class="spinner spinner-anime"></div>
+                    <span>Fetching anime database...</span>
+                </div>
+
+                <!-- Cards Grid -->
+                <div class="cards-scroll-container scroll-anime" id="animeContainer">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Column 2: Studio Ghibli Archives (Vintage Film Theme) -->
+            <div class="section-container vintage-ghibli">
+                <div class="section-header">
+                    <div class="section-title">
+                        <i data-lucide="film" class="color-ghibli"></i>
+                        <h2>Studio Ghibli Retro Cinema</h2>
+                    </div>
+                    <span class="tech-indicator">via Ghibli API</span>
+                </div>
+
+                <!-- Filter Controls -->
+                <div class="filter-row">
+                    <div class="filter-group">
+                        <label for="ghibliSort">Sort By</label>
+                        <select id="ghibliSort" onchange="renderGhibliList()">
+                            <option value="score">Rotten Tomatoes Rating</option>
+                            <option value="date-new">Release Date (Newest)</option>
+                            <option value="date-old">Release Date (Oldest)</option>
+                            <option value="duration">Running Time</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label for="ghibliSearch">Quick Filter</label>
+                        <input type="text" id="ghibliSearch" placeholder="Filter title..." oninput="renderGhibliList()">
+                    </div>
+                </div>
+
+                <!-- Loading Spinner -->
+                <div class="loader-wrapper" id="ghibliLoader">
+                    <div class="spinner spinner-ghibli"></div>
+                    <span>Opening vault archives...</span>
+                </div>
+
+                <!-- Cards Grid -->
+                <div class="cards-scroll-container scroll-ghibli" id="ghibliContainer">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer -->
+        <footer style="margin-top: 40px; padding: 24px 0; border-top: 1px solid var(--border-color); text-align: center; font-size: 13px; color: var(--text-secondary); z-index: 10;">
+            <p>© 2026 30 Days of API Integrations | Developed by <b>Neer Bhardwaj</b> (<a href="mailto:codewithneerb@gmail.com" style="color: var(--accent); text-decoration: none;">codewithneerb@gmail.com</a>)</p>
+        </footer>
+    </div>
+
+    <!-- Unified Detailed Description Drawer/Modal -->
+    <div class="modal-overlay hidden" id="detailModal" onclick="closeDetailModalOutside(event)">
+        <div class="detail-card animate-slide-up">
+            <div class="detail-banner-wrapper">
+                <div class="detail-banner-img" id="detailBanner"></div>
+                <div class="detail-banner-overlay"></div>
+                <button class="btn-close-detail" onclick="closeDetailModal()"><i data-lucide="x"></i></button>
+                <div class="detail-header-text">
+                    <span class="detail-badge" id="detailTypeBadge">TV Series</span>
+                    <h2 id="detailTitle">Spirited Away</h2>
+                    <h4 id="detailSubTitle">千と千尋の神隠し</h4>
+                </div>
+            </div>
+            
+            <div class="detail-body">
+                <div class="detail-meta-grid">
+                    <div class="meta-card">
+                        <span class="meta-card-label">Rating Score</span>
+                        <div class="meta-card-value rating-value">
+                            <i data-lucide="star" class="star-icon"></i>
+                            <span id="detailScore">9.5</span>
+                        </div>
+                    </div>
+                    <div class="meta-card">
+                        <span class="meta-card-label" id="metaLabel2">Release Year</span>
+                        <span class="meta-card-value" id="metaValue2">2001</span>
+                    </div>
+                    <div class="meta-card">
+                        <span class="meta-card-label" id="metaLabel3">Running Time</span>
+                        <span class="meta-card-value" id="metaValue3">125 mins</span>
+                    </div>
+                    <div class="meta-card" id="metaCard4">
+                        <span class="meta-card-label" id="metaLabel4">Director</span>
+                        <span class="meta-card-value" id="metaValue4">Hayao Miyazaki</span>
+                    </div>
+                </div>
+
+                <div class="detail-tabs">
+                    <button class="detail-tab-btn active" id="btnDetailInfo" onclick="switchDetailTab('info')">Synopsis</button>
+                    <button class="detail-tab-btn hidden" id="btnDetailTrailer" onclick="switchDetailTab('trailer')">Trailer / Video</button>
+                </div>
+
+                <div class="detail-content-area">
+                    <div id="detailInfoContent" class="detail-tab-content">
+                        <p id="detailDescription">A young girl, Chihiro, becomes trapped in a mysterious spirit world...</p>
+                        <div class="details-spec-list" id="detailSpecs">
+                            <!-- Populated by JS -->
+                        </div>
+                    </div>
+                    <div id="detailTrailerContent" class="detail-tab-content hidden">
+                        <div class="trailer-iframe-wrapper" id="trailerIframeContainer">
+                            <!-- Youtube Iframe Embed loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- API Specification Info Modal -->
+    <div class="modal-overlay hidden" id="apiModal" onclick="closeApiModalOutside(event)">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h2><i data-lucide="file-json"></i> Day 6 API Specifications</h2>
+                <button class="btn-close" onclick="toggleApiModal()"><i data-lucide="x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="api-spec-block">
+                    <h3>1. Jikan API (MyAnimeList)</h3>
+                    <p>A completely free, keyless, and open-source REST API providing access to the extensive MyAnimeList anime and manga directory, support for currently airing seasons, and general searches.</p>
+                    <div class="code-box">
+                        <span class="code-method">GET</span> https://api.jikan.moe/v4/seasons/now?limit=15
+                    </div>
+                    <div class="code-box" style="margin-top: 6px;">
+                        <span class="code-method">GET</span> https://api.jikan.moe/v4/anime?q={query}&limit=15
+                    </div>
+                </div>
+                
+                <div class="api-spec-block">
+                    <h3>2. Studio Ghibli API</h3>
+                    <p>A community-maintained REST mirror (ghibliapi.dev) returning classic film metadata, Rotten Tomatoes scores, running durations, TMDb poster links, and banner images.</p>
+                    <div class="code-box">
+                        <span class="code-method">GET</span> https://ghibliapi.dev/films
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

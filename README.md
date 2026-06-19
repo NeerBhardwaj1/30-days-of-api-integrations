@@ -67,7 +67,17 @@ Open **[http://localhost:8000](http://localhost:8000)** in your browser.
   * Real-time sliders adjusting font family styles, font size, overlay opacity (readability), background blur, text alignment, and shadows.
   * High-res canvas compiler drawing center-cropped images, text wrapping, and custom shadows to download 1080x1080 PNG graphics.
 
-### 🔒 Days 06 - 30: Mystery Challenges
+### 🟢 Day 06: Anime Explorer & Ghibli Cinema
+* **APIs Integrated**:
+  1. [Jikan API](https://jikan.moe) — MyAnimeList Directory Search
+  2. [Studio Ghibli API](https://ghibliapi.dev) — Movie Archive Database
+* **Key Features**:
+  * Dual-themed layout showcasing high-tech neon cyber controls for modern anime listings alongside vintage sepia film aesthetics for retro Ghibli archives.
+  * Live anime directory search returning ratings, genres, and YouTube embedded trailer iframe videos in a dedicated sliding drawer.
+  * Ghibli catalog sorter filtering titles, and ordering items by Rotten Tomatoes ratings, release dates, or running lengths.
+  * Multi-tiered Jikan cache fallbacks protecting against MyAnimeList's rate limits and offline queries.
+
+### 🔒 Days 07 - 30: Mystery Challenges
 * Locked API integrations and mystery challenges are encrypted in the dashboard portal. A new module will decrypt and unlock each day!
 
 ---
